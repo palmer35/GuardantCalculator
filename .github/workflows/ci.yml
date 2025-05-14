@@ -2,9 +2,9 @@ name: CI Build & Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-test:
@@ -15,37 +15,36 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Загружаем код из репозитория
+        uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: | 
-            8.0.x # Указываем версию .NET
+          dotnet-version: "8.0.x" # Указываем версию .NET
 
       - name: Restore dependencies
-        run: dotnet restore # Восстанавливаем NuGet-пакеты
+        run: dotnet restore
 
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore # Собираем проект
+        run: dotnet build --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --no-build --configuration Release # Запускаем тесты
+        run: dotnet test --no-build --configuration Release
 
       # Опционально: Защита через Guardant
       - name: Publish application
-        run: dotnet publish -c Release -o publish # Публикуем приложение
+        run: dotnet publish -c Release -o publish
 
       - name: Protect Windows app
         if: matrix.os == 'windows-latest'
-        run: scripts/protect-win.bat ./publish # Защита для Windows
+        run: scripts/protect-win.bat ./publish
 
       - name: Protect Linux app
         if: matrix.os == 'ubuntu-latest'
-        run: bash scripts/protect-linux.sh ./publish # Защита для Linux
+        run: bash scripts/protect-linux.sh ./publish
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: protected-app-${{ matrix.os }}
-          path: publish/Protected # Артефакты для скачивания
+          path: publish/Protected
