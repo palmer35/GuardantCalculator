@@ -18,6 +18,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		architecture.md = architecture.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{D23A441D-2478-4C95-9462-5634F64AD70D}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\protect-linux.sh = scripts\protect-linux.sh
+		scripts\protect-win.bat = scripts\protect-win.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
