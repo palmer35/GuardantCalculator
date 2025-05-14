@@ -1,0 +1,51 @@
+name: CI Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest] # Тестируем на Windows и Linux
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Загружаем код из репозитория
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: | 
+            8.0.x # Указываем версию .NET
+
+      - name: Restore dependencies
+        run: dotnet restore # Восстанавливаем NuGet-пакеты
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore # Собираем проект
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release # Запускаем тесты
+
+      # Опционально: Защита через Guardant
+      - name: Publish application
+        run: dotnet publish -c Release -o publish # Публикуем приложение
+
+      - name: Protect Windows app
+        if: matrix.os == 'windows-latest'
+        run: scripts/protect-win.bat ./publish # Защита для Windows
+
+      - name: Protect Linux app
+        if: matrix.os == 'ubuntu-latest'
+        run: bash scripts/protect-linux.sh ./publish # Защита для Linux
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: protected-app-${{ matrix.os }}
+          path: publish/Protected # Артефакты для скачивания
