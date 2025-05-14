@@ -11,6 +11,7 @@ if (Directory.Exists(pluginDir))
         try
         {
             var asm = Assembly.LoadFrom(file);
+
             var types = asm.GetTypes().Where(t => typeof(ICalculatorModule).IsAssignableFrom(t) && !t.IsInterface);
             foreach (var type in types)
             {
