@@ -1,36 +1,35 @@
-﻿using System.Reflection;
-using CalculatorApp.Abstractions;
+﻿using Avalonia;
+using Avalonia.Threading; // ✅ добавьте это пространство имён
+using System;
+using System.Diagnostics;
 
-var modules = new List<ICalculatorModule>();
-var pluginDir = Path.Combine(AppContext.BaseDirectory, "Plugins");
+namespace CalculatorApp;
 
-if (Directory.Exists(pluginDir))
+class Program
 {
-    foreach (var file in Directory.GetFiles(pluginDir, "*.dll"))
+    [STAThread]
+    public static void Main(string[] args)
     {
-        try
-        {
-            var asm = Assembly.LoadFrom(file);
+        BuildAvaloniaApp()
+            .StartWithClassicDesktopLifetime(args);
 
-            var types = asm.GetTypes().Where(t => typeof(ICalculatorModule).IsAssignableFrom(t) && !t.IsInterface);
-            foreach (var type in types)
-            {
-                var instance = (ICalculatorModule?)Activator.CreateInstance(type);
-                if (instance != null)
-                {
-                    modules.Add(instance);
-                }
-            }
-        }
-        catch (Exception ex)
+        // Глобальные необработанные в любом потоке
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         {
-            Console.WriteLine($"Ошибка при загрузке {file}: {ex.Message}");
-        }
+            Debug.WriteLine($"[UnhandledException] {e.ExceptionObject}");
+        };
+
+        // Avalonia UI‑поток исключения
+        Dispatcher.UIThread.UnhandledException += (s, e) =>
+        {
+            Debug.WriteLine($"[UIThreadUnhandled] {e.Exception}");
+            e.Handled = true;
+        };
     }
-}
 
-Console.WriteLine("Модули загружены:");
-foreach (var mod in modules)
-{
-    Console.WriteLine($" - {mod.Name}: 5 и 3 = {mod.Calculate(5, 3)}");
+    public static AppBuilder BuildAvaloniaApp() =>
+        AppBuilder
+            .Configure<App>()
+            .UsePlatformDetect()
+            .LogToTrace();
 }

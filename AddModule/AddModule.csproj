@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<OutputPath>..\..\CalculatorApp\bin\$(Configuration)\net8.0\Plugins\</OutputPath>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CalculatorApp.Abstractions\CalculatorApp.Abstractions.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CalculatorApp.Abstractions\CalculatorApp.Abstractions.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
+		<PackageReference Include="ini-parser" Version="2.5.2" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
+	<Target Name="EnsurePluginsDir" BeforeTargets="Build">
+		<MakeDir Directories="$(SolutionDir)CalculatorApp\bin\$(Configuration)\net8.0\Plugins" />
+	</Target>
 </Project>

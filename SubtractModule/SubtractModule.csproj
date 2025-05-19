@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
+    <PackageReference Include="ini-parser" Version="2.5.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CalculatorApp.Abstractions\CalculatorApp.Abstractions.csproj" />
   </ItemGroup>
 
@@ -10,4 +15,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-</Project>
+	<PropertyGroup>
+		<!-- меняем папку выхода, чтобы DLL попадала сразу в папку Plugins вашего приложения -->
+		<OutputPath>..\..\CalculatorApp\bin\$(Configuration)\net8.0\Plugins\</OutputPath>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+
+	</Project>
+

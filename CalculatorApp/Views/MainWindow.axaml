@@ -1,0 +1,113 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:CalculatorApp.ViewModels"
+        x:Class="CalculatorApp.Views.MainWindow"
+        Title="Modern Calculator"
+        Height="600"
+        Width="700"
+        FontFamily="Segoe UI"
+        Background="#2D2D2D">
+
+	<!-- ViewModel как DataContext -->
+	<Window.DataContext>
+		<vm:MainWindowViewModel/>
+	</Window.DataContext>
+
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="#4CAF50"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontSize" Value="18"/>
+			<Setter Property="Padding" Value="15 10"/>
+			<Setter Property="Margin" Value="0 10"/>
+			<Setter Property="CornerRadius" Value="8"/>
+		</Style>
+		<Style Selector="Button:pointerover">
+			<Setter Property="Background" Value="#45a049"/>
+			<Setter Property="Cursor" Value="Hand"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="#404040"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontSize" Value="24"/>
+			<Setter Property="Margin" Value="0 0 0 20"/>
+			<Setter Property="Padding" Value="15"/>
+			<Setter Property="CornerRadius" Value="8"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Watermark" Value="Enter expression (e.g., 2+3*4)"/>
+		</Style>
+	</Window.Styles>
+
+	<!-- Четыре ряда без свойства Spacing -->
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="30">
+
+		<!-- 0: Заголовок -->
+		<TextBlock Grid.Row="0"
+				   Text="CALCULATOR"
+				   FontSize="28"
+				   Foreground="#4CAF50"
+				   FontWeight="Bold"
+				   HorizontalAlignment="Center"
+				   Margin="0 0 0 30"/>
+
+		<!-- 1: Ввод выражения и кнопка Calculate -->
+		<StackPanel Grid.Row="1" Orientation="Vertical" Spacing="10">
+			<TextBox Text="{Binding Expression, Mode=TwoWay}"
+					 Height="60"
+					 CaretBrush="White"/>
+			<Button Content="CALCULATE"
+					Command="{Binding CalculateCommand}"
+					HorizontalAlignment="Stretch"/>
+		</StackPanel>
+
+		<!-- 2: Результат -->
+		<Border Grid.Row="2"
+				Background="#404040"
+				CornerRadius="8"
+				Padding="20 15"
+				Margin="0 20 0 0">
+			<TextBlock Text="{Binding Result}"
+					   FontSize="26"
+					   Foreground="#4CAF50"
+					   FontWeight="SemiBold"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"/>
+		</Border>
+
+		<!-- 3: Управление модулями -->
+		<StackPanel Grid.Row="3"
+			Orientation="Vertical"
+			Margin="0,20,0,0"
+			Spacing="8">
+
+			<Button Content="Перезагрузить модули"
+					Command="{Binding ReloadModulesCommand}"
+					Width="220"
+					HorizontalAlignment="Center"/>
+
+			<!-- Новый красивый вывод статуса -->
+			<TextBlock Text="{Binding StatusMessage}"
+					   FontSize="18"
+					   Foreground="#FFA500"
+					   FontWeight="SemiBold"
+					   TextAlignment="Center"
+					   HorizontalAlignment="Center"
+					   Margin="0,10,0,10"/>
+
+			<TextBlock Text="Загруженные модули:"
+					   Foreground="White"
+					   FontWeight="Bold"
+					   FontSize="16"
+					   Margin="0,0,0,5"/>
+
+			<ListBox ItemsSource="{Binding ModuleNames}"
+					 Height="100"
+					 Background="#404040"
+					 Foreground="White"
+					 BorderThickness="0"
+					 Padding="10"
+					 FontSize="16"/>
+		</StackPanel>
+
+	</Grid>
+</Window>
